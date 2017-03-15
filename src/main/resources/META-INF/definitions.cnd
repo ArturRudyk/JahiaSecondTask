@@ -1,0 +1,20 @@
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[jnt:ListOfJudges] > jnt:content, jmix:basicContent
+ - titleOfLisy (string) scoreboost=2.0
+
+[jnt:JudgeView] > jnt:content, jmix:basicContent
+
+[jnt:judgeModel] > jnt:content, jmix:basicContent
+ - lastName (string)
+ - firstName (string)
+ - inputFunction (string)
+ - resignation (string)
+ - court (string)
+ - canton (string)
+ - left (string)
+ - birthDeath (string)
+ - biography (string, richtext)
+ - photo (weakreference, picker[type='image'])
+
