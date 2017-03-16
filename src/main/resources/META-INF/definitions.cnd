@@ -7,14 +7,15 @@
 [jnt:JudgeView] > jnt:content, jmix:basicContent
 
 [jnt:judgeModel] > jnt:content, jmix:basicContent
- - lastName (string)
- - firstName (string)
- - inputFunction (string)
- - resignation (string)
- - court (string)
- - canton (string)
- - left (string)
- - birthDeath (string)
+ - lastName (string) mandatory
+ - firstName (string) mandatory
+ - inputFunction (date, datepicker[format='yyyy']) mandatory
+ - resignation (date, datepicker[format='yyyy'])
+ - court (string) internationalized
+ - canton (string) mandatory
+ - left (string) internationalized
  - biography (string, richtext)
  - photo (weakreference, picker[type='image'])
+ - birth (date, datepicker[format='yyyy']) mandatory
+ - death (date, datepicker[format='yyyy'])
 

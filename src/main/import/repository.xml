@@ -33,7 +33,16 @@
                 </sources>
                 
                 <portlets jcr:primaryType="jnt:portletFolder"/>
-                <files jcr:primaryType="jnt:folder"/>
+                <files jcr:primaryType="jnt:folder">
+                    <asc.gif j:height="15"
+                     j:width="15"
+                     jcr:mixinTypes="jmix:image"
+                     jcr:primaryType="jnt:file">
+                        <jcr:content jcr:mimeType="image/gif" jcr:primaryType="jnt:resource"/>
+                        <thumbnail jcr:mimeType="application/binary" jcr:primaryType="jnt:resource"/>
+                        <thumbnail2 jcr:mimeType="application/binary" jcr:primaryType="jnt:resource"/>
+                    </asc.gif>
+                </files>
                 <contents jcr:primaryType="jnt:contentFolder"/>
                 <templates j:rootTemplatePath="/base" jcr:primaryType="jnt:templatesFolder">
                     <files jcr:primaryType="jnt:folder"/>

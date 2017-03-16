@@ -25,10 +25,12 @@
 </jcr:jqom>
 
 <c:forEach items="${judges.nodes}" var="judge">
-   <h1 align="center">${judge.properties['lastName'].string} ${judge.properties['firstName'].string} ${judge.properties['birthDeath'].string}</h1>
+  <div>
+    <h1 align="left" style="font-size:24px">${judge.properties['lastName'].string} &nbsp; ${judge.properties['firstName'].string} &nbsp;
+     <fmt:formatDate value="${judge.properties.birth.date.time}" pattern="yyyy" /> - <fmt:formatDate value="${judge.properties.death.date.time}" pattern="yyyy" /></h1>
    <c:set var="photo" value="${judge.properties['photo']}"/>
    <c:url var="imgUrl" value="${photo.node.url}"></c:url>
-   <p align="center"><img src="${imgUrl}"/></p>
-   <p>${judge.properties['biography'].string}</p>
+   <div align="center" style="float:left; padding: .357em 1.268em .5em 0;"><img src="${imgUrl}" width="113" height="156" border="0"/></div>
+   <div>${judge.properties['biography'].string}</div>
+  </div>
 </c:forEach>
-  
