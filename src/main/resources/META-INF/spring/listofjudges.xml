@@ -5,4 +5,8 @@
     <bean class="">
         <property name="name" value="value"/>
     </bean>
+    <bean class="arrud.ReverseAction" >
+        <property name="name" value="reverse"/>
+      
+    </bean>
 </beans>
