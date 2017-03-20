@@ -38,7 +38,7 @@
     <query:sortBy propertyName="${param.order}" order="${param.type}"/> 
   </c:if>
 </jcr:jqom>
-<table align="left" frame="hsides" rules="rows" cellpadding="5" cellspacing="5" width="80%">
+<table align="left" frame="hsides" rules="rows" cellpadding="5" cellspacing="5" width="100%">
   <tr >
       <th>Nom</th>
       <th>Prénom</th>
@@ -52,15 +52,15 @@
   <br/>
   
   <tr>
-    <th valign="top"><a href="${renderContent.mailResource.node.url}?order=lastName&type=asc"><img src="${url.currentModule}/images/asc.gif" width="15" height="15" border="0" /></a>
-      <a href="${renderContent.mailResource.node.url}?order=lastName&type=desc"><img src="${url.currentModule}/images/desc.gif" width="15" height="15" border="0" /></a></th>
+    <th align="top"><a href="${renderContext.mainResource.node.url}?order=lastName&type=asc"><img src="${url.currentModule}/images/asc.gif" width="15" height="15" border="0" /></a>
+      <a href="${renderContext.mainResource.node.url}?order=lastName&type=desc"><img src="${url.currentModule}/images/desc.gif" width="15" height="15" border="0" /></a></th>
 	<th><img src=""/></th>
-    <th valign="top"><a href="${renderContent.mailResource.node.url}?order=inputFunction&type=asc"><img src="${url.currentModule}/images/asc.gif" width="15" height="15" border="0" /></a>
-      <a href="${renderContent.mailResource.node.url}?order=inputFunction&type=desc"><img src="${url.currentModule}/images/desc.gif" width="15" height="15" border="0"  /></a></th>
+    <th align="top"><a href="${renderContext.mainResource.node.url}?order=inputFunction&type=asc"><img src="${url.currentModule}/images/asc.gif" width="15" height="15" border="0" /></a>
+      <a href="${renderContext.mainResource.node.url}?order=inputFunction&type=desc"><img src="${url.currentModule}/images/desc.gif" width="15" height="15" border="0"  /></a></th>
 	<th><img src=""/></th>
     <th><img src=""/></th>
-	<th valign="top"><a href="${renderContent.mailResource.node.url}?order=canton&type=asc"><img src="${url.currentModule}/images/asc.gif" width="15" height="15" border="0" /></a>
-      <a href="${renderContent.mailResource.node.url}?order=canton&type=desc"><img src="${url.currentModule}/images/desc.gif" width="15" height="15" border="0" /></a></th>	
+	<th align="top"><a href="${renderContext.mainResource.node.url}?order=canton&type=asc"><img src="${url.currentModule}/images/asc.gif" width="15" height="15" border="0" /></a>
+      <a href="${renderContext.mainResource.node.url}?order=canton&type=desc"><img src="${url.currentModule}/images/desc.gif" width="15" height="15" border="0" /></a></th>	
     <th><img src=""/></th>	
   </tr>
   
@@ -78,5 +78,9 @@
         <fmt:formatDate value="${judge.properties.death.date.time}" pattern="yyyy" /></td>
     </tr>
   </c:forEach>
- 
-</table>
+   
+ </table>
+<br/>
+
+<p>${param.log}</p>
+<div align="center"><a href="<c:url value='${url.base}${currentNode.path}'/>.reverse.do"><img src="${url.currentModule}/images/asc.gif" width="150" height="30" border="0" /></a></div>

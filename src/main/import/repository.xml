@@ -13,11 +13,9 @@
                     <src jcr:mixinTypes="jmix:sourceControl" jcr:primaryType="jnt:folder">
                         <main jcr:mixinTypes="jmix:sourceControl" jcr:primaryType="jnt:folder">
                             <resources jcr:mixinTypes="jmix:sourceControl" jcr:primaryType="jnt:folder">
-                                <jnt_JudgeView jcr:mixinTypes="jmix:sourceControl"
-                                    jcr:primaryType="jnt:nodeTypeFolder">
-                                    <html jcr:mixinTypes="jmix:sourceControl"
-                              jcr:primaryType="jnt:templateTypeFolder">
-                                        <JudgeView.jsp jcr:mixinTypes="jmix:sourceControl" jcr:primaryType="jnt:viewFile"/>
+                                <jnt_JudgeView jcr:primaryType="jnt:nodeTypeFolder">
+                                    <html jcr:primaryType="jnt:templateTypeFolder">
+                                        <JudgeView.jsp jcr:primaryType="jnt:viewFile"/>
                                     </html>
                                 </jnt_JudgeView>
                                 <jnt_ListOfJudges jcr:mixinTypes="jmix:sourceControl"
