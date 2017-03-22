@@ -19,3 +19,20 @@
  - birth (date, datepicker[format='yyyy']) mandatory
  - death (date, datepicker[format='yyyy'])
 
+[jnt:journalist] > jnt:content, jmix:basicContent
+ - title (string) multiple internationalized
+ - academicTitle (string) internationalized
+ - firstName (string) internationalized
+ - lastName (string) internationalized
+ - adress (string) internationalized
+ - NPA (string) internationalized
+ - place (string) internationalized
+ - phoneNumber (string)
+ - cellphoneNumber (string)
+ - email (string)
+ - password (string)
+ - newspapers (string)
+ - workLanguage (string)
+ - typeOfAccreditation (string)
+ - accreditedFor (string)
+

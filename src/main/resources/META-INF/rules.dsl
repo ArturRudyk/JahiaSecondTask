@@ -1,0 +1,1 @@
+[consequence][]Create journalist from {node}=createUserRule.createUser({node});

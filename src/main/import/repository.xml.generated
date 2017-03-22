@@ -18,11 +18,9 @@
                                         <JudgeView.jsp jcr:primaryType="jnt:viewFile"/>
                                     </html>
                                 </jnt_JudgeView>
-                                <jnt_ListOfJudges jcr:mixinTypes="jmix:sourceControl"
-                                       jcr:primaryType="jnt:nodeTypeFolder">
-                                    <html jcr:mixinTypes="jmix:sourceControl"
-                              jcr:primaryType="jnt:templateTypeFolder">
-                                        <ListOfJudges.jsp jcr:mixinTypes="jmix:sourceControl" jcr:primaryType="jnt:viewFile"/>
+                                <jnt_ListOfJudges jcr:primaryType="jnt:nodeTypeFolder">
+                                    <html jcr:primaryType="jnt:templateTypeFolder">
+                                        <ListOfJudges.jsp jcr:primaryType="jnt:viewFile"/>
                                     </html>
                                 </jnt_ListOfJudges>
                             </resources>

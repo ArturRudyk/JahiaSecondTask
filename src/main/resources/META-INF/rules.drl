@@ -1,0 +1,24 @@
+
+package org.jahia.modules.listofjudges.rules
+
+// list any import classes here.
+import arrud.CreateUserRule
+import org.jahia.services.content.rules.*
+import org.slf4j.Logger
+
+expander rules.dsl
+
+// declare any global variables here
+global User user
+global Service service
+global Logger logger
+global CreateUserRule createUserRule
+
+rule "Create new user for new journalist"
+   when
+       A new node is created
+                - it has the type jnt:journalist
+   then
+       Log "Creating new user task for new journalist: "
+       Create journalist from node
+end
