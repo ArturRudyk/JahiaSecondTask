@@ -29,10 +29,10 @@
  - place (string) mandatory
  - phoneNumber (string)
  - cellphoneNumber (string)
- - email (string, text['^$|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}']) mandatory multiple
+ - email (string, text['^$|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}']) mandatory
  - password (string) mandatory
  - newspapers (string)
- - workLanguage (string, choicelist) mandatory multiple < 'German', 'French', 'Itallian'
+ - workLanguage (string, choicelist) mandatory < 'German', 'French', 'Itallian'
  - typeOfAccreditation (string, choicelist) mandatory < 'Main', 'Accredited', 'Courts'
  - accreditedFor (string)
 
