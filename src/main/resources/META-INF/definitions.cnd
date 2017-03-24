@@ -20,19 +20,19 @@
  - death (date, datepicker[format='yyyy'])
 
 [jnt:journalist] > jnt:content, jmix:basicContent
- - title (string)
+ - title (string, choicelist) mandatory < 'Mr', 'Mrs'
  - academicTitle (string)
- - firstName (string)
- - lastName (string)
- - adress (string)
- - NPA (string)
- - place (string)
+ - firstName (string) mandatory
+ - lastName (string) mandatory
+ - adress (string) mandatory
+ - NPA (string, text['^$|[0-9]+']) mandatory
+ - place (string) mandatory
  - phoneNumber (string)
  - cellphoneNumber (string)
- - email (string)
- - password (string)
+ - email (string, text['^$|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}']) mandatory multiple
+ - password (string) mandatory
  - newspapers (string)
- - workLanguage (string)
- - typeOfAccreditation (string)
+ - workLanguage (string, choicelist) mandatory multiple < 'German', 'French', 'Itallian'
+ - typeOfAccreditation (string, choicelist) mandatory < 'Main', 'Accredited', 'Courts'
  - accreditedFor (string)
 

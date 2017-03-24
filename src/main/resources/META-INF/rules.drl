@@ -23,15 +23,6 @@ rule "Create new user for new journalist"
        Create journalistUser from node
 end
 
-rule "Remove user when a journalist is removed"
-   when
-       A node is deleted
-            - it has the type jnt:journalist
-   then
-       Log "removing some user because journalist removed "
-       Remove journalistUser from node
-end
-
 rule "Modify user when a journalist is modified"
    when
        A node is published
