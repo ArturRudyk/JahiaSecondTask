@@ -2,7 +2,7 @@
 package org.jahia.modules.listofjudges.rules
 
 // list any import classes here.
-import arrud.CreateUserRule
+import arrud.UserRule
 import org.jahia.services.content.rules.*
 import org.slf4j.Logger
 
@@ -12,7 +12,7 @@ expander rules.dsl
 global User user
 global Service service
 global Logger logger
-global CreateUserRule createUserRule
+global UserRule createUserRule
 
 rule "Create new user for new journalist"
    when
@@ -20,5 +20,23 @@ rule "Create new user for new journalist"
                 - it has the type jnt:journalist
    then
        Log "Creating new user task for new journalist: "
-       Create journalist from node
+       Create journalistUser from node
+end
+
+rule "Remove user when a journalist is removed"
+   when
+       A node is deleted
+            - it has the type jnt:journalist
+   then
+       Log "removing some user because journalist removed "
+       Remove journalistUser from node
+end
+
+rule "Modify user when a journalist is modified"
+   when
+       A node is published
+            - it has the type jnt:journalist
+   then
+       Log "modifying some user because some journalist was modified "
+       Modify journalistUser from node
 end

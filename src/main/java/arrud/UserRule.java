@@ -4,6 +4,8 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.rules.AddedNodeFact;
+import org.jahia.services.content.rules.DeletedNodeFact;
+import org.jahia.services.content.rules.PublishedNodeFact;
 import org.jahia.services.content.rules.User;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -12,10 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-public class CreateUserRule {
+public class UserRule {
     @Autowired
     private JahiaUserManagerService jahiaUserManagerService;
 
@@ -43,6 +46,54 @@ public class CreateUserRule {
                 JahiaUser journalistUser = jahiaUserManagerService.createUser(jcrNodeWrapper.getName(),
                         jcrNodeWrapper.getProperty("password").getString(), properties, session).getJahiaUser();
                 session.save();
+                return true;
+            }
+        });
+    }
+
+    public void removeUser(DeletedNodeFact deletedNodeFact) throws RepositoryException {
+        final String deletedNodeName = deletedNodeFact.getName();
+        final String userPath = jahiaUserManagerService.getUserPath(deletedNodeName);
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            @Override
+            public Boolean doInJCR(final JCRSessionWrapper session) throws RepositoryException {
+                Boolean isDeleted = jahiaUserManagerService.deleteUser(userPath, session);
+                session.save();
+                return isDeleted;
+            }
+        });
+    }
+
+    public void modifyUser(PublishedNodeFact publishedNodeFact) throws RepositoryException {
+        final JCRNodeWrapper jcrNodeWrapper = publishedNodeFact.getNode();
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            @Override
+            public Boolean doInJCR(final JCRSessionWrapper session) throws RepositoryException {
+                JCRPublicationService jcrPublicationService = ServicesRegistry.getInstance().getJCRPublicationService();
+                JCRUserNode userNode = jahiaUserManagerService.lookupUser(jcrNodeWrapper.getName());
+
+                userNode.setProperty("title", jcrNodeWrapper.getProperty("title").getString());
+                userNode.setProperty("academicTitle", jcrNodeWrapper.getProperty("academicTitle").getString());
+                userNode.setProperty("firstName", jcrNodeWrapper.getProperty("firstName").getString());
+                userNode.setProperty("lastName", jcrNodeWrapper.getProperty("lastName").getString());
+                userNode.setProperty("adress", jcrNodeWrapper.getProperty("adress").getString());
+                userNode.setProperty("NPA", jcrNodeWrapper.getProperty("NPA").getString());
+                userNode.setProperty("place", jcrNodeWrapper.getProperty("place").getString());
+                userNode.setProperty("phoneNumber", jcrNodeWrapper.getProperty("phoneNumber").getString());
+                userNode.setProperty("cellphoneNumber", jcrNodeWrapper.getProperty("cellphoneNumber").getString());
+                userNode.setProperty("email", jcrNodeWrapper.getProperty("email").getString());
+                userNode.setProperty("newspapers", jcrNodeWrapper.getProperty("newspapers").getString());
+                userNode.setProperty("workLanguage", jcrNodeWrapper.getProperty("workLanguage").getString());
+                userNode.setProperty("typeOfAccreditation", jcrNodeWrapper.getProperty("typeOfAccreditation").getString());
+                userNode.setProperty("accreditedFor", jcrNodeWrapper.getProperty("accreditedFor").getString());
+                String title = jcrNodeWrapper.getProperty("title").getString();
+                String academicTitle = jcrNodeWrapper.getProperty("academicTitle").getString();
+                String place = jcrNodeWrapper.getProperty("place").getString();
+                String uuid = userNode.getUUID();
+                userNode.getSession().save();
+                JCRPublicationService.getInstance().publishByMainId(userNode.getIdentifier(),
+                        "default", "live", null, true, Collections.singletonList(""));
+
                 return true;
             }
         });

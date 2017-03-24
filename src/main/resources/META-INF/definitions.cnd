@@ -20,13 +20,13 @@
  - death (date, datepicker[format='yyyy'])
 
 [jnt:journalist] > jnt:content, jmix:basicContent
- - title (string) multiple internationalized
- - academicTitle (string) internationalized
- - firstName (string) internationalized
- - lastName (string) internationalized
- - adress (string) internationalized
- - NPA (string) internationalized
- - place (string) internationalized
+ - title (string)
+ - academicTitle (string)
+ - firstName (string)
+ - lastName (string)
+ - adress (string)
+ - NPA (string)
+ - place (string)
  - phoneNumber (string)
  - cellphoneNumber (string)
  - email (string)
