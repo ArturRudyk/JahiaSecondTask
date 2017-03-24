@@ -7,6 +7,8 @@ import org.jahia.services.content.rules.AddedNodeFact;
 import org.jahia.services.content.rules.User;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Properties;
 
 public class CreateUserRule {
+    @Autowired
     private JahiaUserManagerService jahiaUserManagerService;
 
     public void createUser(AddedNodeFact addedNodeFact) throws RepositoryException {
@@ -37,12 +40,15 @@ public class CreateUserRule {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             @Override
             public Boolean doInJCR(final JCRSessionWrapper session) throws RepositoryException {
-                JahiaUser journalistUser = (JahiaUser) jahiaUserManagerService.createUser(jcrNodeWrapper.getName(),
-                        jcrNodeWrapper.getProperty("password").getString(), properties, session);
+                JahiaUser journalistUser = jahiaUserManagerService.createUser(jcrNodeWrapper.getName(),
+                        jcrNodeWrapper.getProperty("password").getString(), properties, session).getJahiaUser();
                 session.save();
                 return true;
             }
         });
     }
 
+    public void setJahiaUserManagerService(JahiaUserManagerService jahiaUserManagerService) {
+        this.jahiaUserManagerService = jahiaUserManagerService;
+    }
 }
