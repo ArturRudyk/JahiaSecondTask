@@ -10,9 +10,9 @@ import org.jahia.services.content.rules.User;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,24 +21,18 @@ import java.util.Properties;
 public class UserRule {
     @Autowired
     private JahiaUserManagerService jahiaUserManagerService;
+    String[] massiveOfProperties = {"title", "academicTitle", "firstName", "firstName", "lastName", "adress",
+            "NPA", "place", "phoneNumber", "cellphoneNumber", "email", "newspapers", "workLanguage",
+            "typeOfAccreditation", "accreditedFor"};
 
     public void createUser(AddedNodeFact addedNodeFact) throws RepositoryException {
         final JCRNodeWrapper jcrNodeWrapper = addedNodeFact.getNode();
         final Properties properties = new Properties();
-        properties.setProperty("title", jcrNodeWrapper.getProperty("title").getString());
-        properties.setProperty("academicTitle", jcrNodeWrapper.getProperty("academicTitle").getString());
-        properties.setProperty("firstName", jcrNodeWrapper.getProperty("firstName").getString());
-        properties.setProperty("lastName", jcrNodeWrapper.getProperty("lastName").getString());
-        properties.setProperty("adress", jcrNodeWrapper.getProperty("adress").getString());
-        properties.setProperty("NPA", jcrNodeWrapper.getProperty("NPA").getString());
-        properties.setProperty("place", jcrNodeWrapper.getProperty("place").getString());
-        properties.setProperty("phoneNumber", jcrNodeWrapper.getProperty("phoneNumber").getString());
-        properties.setProperty("cellphoneNumber", jcrNodeWrapper.getProperty("cellphoneNumber").getString());
-        properties.setProperty("email", jcrNodeWrapper.getProperty("email").getString());
-        properties.setProperty("newspapers", jcrNodeWrapper.getProperty("newspapers").getString());
-        properties.setProperty("workLanguage", jcrNodeWrapper.getProperty("workLanguage").getString());
-        properties.setProperty("typeOfAccreditation", jcrNodeWrapper.getProperty("typeOfAccreditation").getString());
-        properties.setProperty("accreditedFor", jcrNodeWrapper.getProperty("accreditedFor").getString());
+        for (int i = 0; i < massiveOfProperties.length; i++) {
+            if (jcrNodeWrapper.hasProperty(massiveOfProperties[i])) {
+                properties.setProperty(massiveOfProperties[i], jcrNodeWrapper.getPropertyAsString(massiveOfProperties[i]));
+            }
+        }
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             @Override
             public Boolean doInJCR(final JCRSessionWrapper session) throws RepositoryException {
@@ -46,7 +40,8 @@ public class UserRule {
                         jcrNodeWrapper.getProperty("password").getString(), properties, session).getJahiaUser();
                 session.save();
                 JCRPublicationService.getInstance().publishByMainId(jcrNodeWrapper.getIdentifier(),
-                        "default", "live", null, true, null);                return true;
+                        "default", "live", null, true, null);
+                return true;
             }
         });
     }
@@ -68,20 +63,11 @@ public class UserRule {
                 @Override
                 public Boolean doInJCR(final JCRSessionWrapper session) throws RepositoryException {
                     JCRUserNode userNode = jahiaUserManagerService.lookupUser(jcrNodeWrapper.getName(), session);
-                    userNode.setProperty("title", jcrNodeWrapper.getProperty("title").getString());
-                    userNode.setProperty("academicTitle", jcrNodeWrapper.getProperty("academicTitle").getString());
-                    userNode.setProperty("firstName", jcrNodeWrapper.getProperty("firstName").getString());
-                    userNode.setProperty("lastName", jcrNodeWrapper.getProperty("lastName").getString());
-                    userNode.setProperty("adress", jcrNodeWrapper.getProperty("adress").getString());
-                    userNode.setProperty("NPA", jcrNodeWrapper.getProperty("NPA").getString());
-                    userNode.setProperty("place", jcrNodeWrapper.getProperty("place").getString());
-                    userNode.setProperty("phoneNumber", jcrNodeWrapper.getProperty("phoneNumber").getString());
-                    userNode.setProperty("cellphoneNumber", jcrNodeWrapper.getProperty("cellphoneNumber").getString());
-                    userNode.setProperty("email", jcrNodeWrapper.getProperty("email").getString());
-                    userNode.setProperty("newspapers", jcrNodeWrapper.getProperty("newspapers").getString());
-                    userNode.setProperty("workLanguage", jcrNodeWrapper.getProperty("workLanguage").getString());
-                    userNode.setProperty("typeOfAccreditation", jcrNodeWrapper.getProperty("typeOfAccreditation").getString());
-                    userNode.setProperty("accreditedFor", jcrNodeWrapper.getProperty("accreditedFor").getString());
+                    for (int i = 0; i < massiveOfProperties.length; i++) {
+                        if (jcrNodeWrapper.hasProperty(massiveOfProperties[i])) {
+                            userNode.setProperty(massiveOfProperties[i], jcrNodeWrapper.getPropertyAsString(massiveOfProperties[i]));
+                        }
+                    }
                     userNode.getSession().save();
                     JCRPublicationService.getInstance().publishByMainId(userNode.getIdentifier(),
                             "default", "live", null, true, null);

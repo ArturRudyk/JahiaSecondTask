@@ -25,11 +25,11 @@
  - firstName (string) mandatory
  - lastName (string) mandatory
  - adress (string) mandatory
- - NPA (string, text['^$|[0-9]+']) mandatory
+ - NPA (string) mandatory < '[0-9]*'
  - place (string) mandatory
  - phoneNumber (string)
  - cellphoneNumber (string)
- - email (string, text['^$|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}']) mandatory
+ - email (string) mandatory < '^$|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}'
  - password (string) mandatory
  - newspapers (string)
  - workLanguage (string, choicelist) mandatory < 'German', 'French', 'Itallian'
