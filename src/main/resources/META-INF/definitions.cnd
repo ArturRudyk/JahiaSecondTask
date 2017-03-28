@@ -35,4 +35,5 @@
  - workLanguage (string, choicelist) mandatory < 'German', 'French', 'Itallian'
  - typeOfAccreditation (string, choicelist) mandatory < 'Main', 'Accredited', 'Courts'
  - accreditedFor (string)
+ - isEnabled (boolean) mandatory < 'true', 'false'
 
