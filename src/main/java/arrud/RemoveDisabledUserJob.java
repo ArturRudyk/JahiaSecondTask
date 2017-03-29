@@ -29,29 +29,50 @@ public class RemoveDisabledUserJob extends BackgroundJob {
 
     @Override
     public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession("default",
+        JCRSessionWrapper sessionLive = JCRSessionFactory.getInstance().getCurrentSystemSession("live",
                 null, null);
-        QueryManager queryManager = session.getWorkspace().getQueryManager();
         String query = "SELECT * FROM [jnt:journalist]";
-        Query q  = queryManager.createQuery(query, Query.JCR_SQL2);
-        QueryResultWrapper queryResult = (QueryResultWrapper) q.execute();
-        JCRNodeIteratorWrapper jcrNodeIteratorWrapper = queryResult.getNodes();
+        JCRNodeIteratorWrapper jcrNodeIteratorWrapper = getNodes(sessionLive, query);
         while (jcrNodeIteratorWrapper.hasNext()) {
             JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) jcrNodeIteratorWrapper.nextNode();
             Boolean isEnabled = jcrNodeWrapper.getProperty("isEnabled").getBoolean();
             if (!isEnabled) {
-                final String userPath = jahiaUserManagerService.getUserPath(jcrNodeWrapper.getName());
-                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-                    @Override
-                    public Boolean doInJCR(final JCRSessionWrapper session) throws RepositoryException {
-                        jahiaUserManagerService.deleteUser(userPath, session);
-                        session.save();
-                        return true;
-                    }
-                });
+                removeUser(jcrNodeWrapper);
+                String name = jcrNodeWrapper.getName();
+                removeJournalistInDefault(jcrNodeWrapper.getName());
                 jcrNodeWrapper.remove();
-                session.save();
+                sessionLive.save();
             }
+        }
+    }
+    private JCRNodeIteratorWrapper getNodes (JCRSessionWrapper session, String query) throws RepositoryException {
+        QueryManager queryManager = session.getWorkspace().getQueryManager();
+        Query q  = queryManager.createQuery(query, Query.JCR_SQL2);
+        QueryResultWrapper queryResult = (QueryResultWrapper) q.execute();
+        return queryResult.getNodes();
+    }
+
+    private void removeUser(JCRNodeWrapper jcrNodeWrapper) throws RepositoryException {
+        final String userPath = jahiaUserManagerService.getUserPath(jcrNodeWrapper.getName());
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            @Override
+            public Boolean doInJCR(final JCRSessionWrapper session) throws RepositoryException {
+                jahiaUserManagerService.deleteUser(userPath, session);
+                session.save();
+                return true;
+            }
+        });
+    }
+
+    private void removeJournalistInDefault(String name) throws RepositoryException {
+        JCRSessionWrapper sessionDefault = JCRSessionFactory.getInstance().getCurrentSystemSession(
+                "default",null, null);
+        String query = "SELECT * FROM [jnt:journalist] WHERE [j:nodename]='" + name + "'";
+        JCRNodeIteratorWrapper jcrNodeIteratorWrapper = getNodes(sessionDefault, query);
+        if (jcrNodeIteratorWrapper.hasNext()) {
+            JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) jcrNodeIteratorWrapper.nextNode();
+            jcrNodeWrapper.remove();
+            sessionDefault.save();
         }
     }
 
