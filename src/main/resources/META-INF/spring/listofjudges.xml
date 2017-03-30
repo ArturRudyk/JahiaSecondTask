@@ -24,7 +24,6 @@
         <property name="jahiaUserManagerService" ref="JahiaUserManagerService"/>
     </bean>
 
-
     <bean parent="jobSchedulingBean">
         <property name="jobDetail">
             <bean class="org.springframework.scheduling.quartz.JobDetailBean">

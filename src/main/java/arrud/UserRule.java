@@ -1,31 +1,34 @@
 package arrud;
 
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.rules.AddedNodeFact;
-import org.jahia.services.content.rules.DeletedNodeFact;
 import org.jahia.services.content.rules.PublishedNodeFact;
-import org.jahia.services.content.rules.User;
+import org.jahia.services.mail.MailService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import javax.script.ScriptException;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 
 public class UserRule {
+
     @Autowired
     private JahiaUserManagerService jahiaUserManagerService;
+
+    @Autowired
+    private MailService mailService;
+
     String[] massiveOfProperties = {"title", "academicTitle", "firstName", "firstName", "lastName", "adress",
             "NPA", "place", "phoneNumber", "cellphoneNumber", "email", "newspapers", "workLanguage",
             "typeOfAccreditation", "accreditedFor"};
 
-    public void createUser(AddedNodeFact addedNodeFact) throws RepositoryException {
+
+    public void createUser(AddedNodeFact addedNodeFact) throws RepositoryException, ScriptException {
         final JCRNodeWrapper jcrNodeWrapper = addedNodeFact.getNode();
         final Properties properties = new Properties();
         for (int i = 0; i < massiveOfProperties.length; i++) {
@@ -44,9 +47,11 @@ public class UserRule {
                 return true;
             }
         });
+        String mailConfirmationTemplate = "/mails/templates/newUserConfirmation.vm";
+        sendMessage(jcrNodeWrapper, mailConfirmationTemplate);
     }
 
-    public void modifyUser(PublishedNodeFact publishedNodeFact) throws RepositoryException {
+    public void modifyUser(PublishedNodeFact publishedNodeFact) throws RepositoryException, ScriptException {
         final JCRNodeWrapper jcrNodeWrapper = publishedNodeFact.getNode();
         if (jcrNodeWrapper.isMarkedForDeletion()) {
             final String userPath = jahiaUserManagerService.getUserPath(publishedNodeFact.getName());
@@ -58,6 +63,8 @@ public class UserRule {
                     return true;
                 }
             });
+            String mailConfirmationTemplate = "/mails/templates/removingUserConfirmation.vm";
+            sendMessage(jcrNodeWrapper, mailConfirmationTemplate);
         } else {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 @Override
@@ -74,10 +81,26 @@ public class UserRule {
                     return true;
                 }
             });
+            String mailConfirmationTemplate = "/mails/templates/modifyingUserConfirmation.vm";
+            sendMessage(jcrNodeWrapper, mailConfirmationTemplate);
         }
+    }
+
+    private void sendMessage(JCRNodeWrapper jcrNodeWrapper, String mailConfirmationTemplate)
+            throws ScriptException, RepositoryException {
+        Map<String, Object> bindings = new HashMap<String, Object>();
+        bindings.put("newUser", jcrNodeWrapper);
+        String email = jcrNodeWrapper.getPropertyAsString("email");
+        mailService.sendMessageWithTemplate(mailConfirmationTemplate, bindings, email,
+                mailService.defaultSender(), "", "", Locale.ENGLISH, "ListOfJudges");
     }
 
     public void setJahiaUserManagerService(JahiaUserManagerService jahiaUserManagerService) {
         this.jahiaUserManagerService = jahiaUserManagerService;
     }
+
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
+    }
+
 }

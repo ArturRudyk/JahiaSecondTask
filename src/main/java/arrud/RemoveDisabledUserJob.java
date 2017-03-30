@@ -6,14 +6,10 @@ import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.quartz.JobExecutionContext;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-import javax.mail.Session;
 
 /**
  * Created by root on 27.03.17.
@@ -29,8 +25,8 @@ public class RemoveDisabledUserJob extends BackgroundJob {
 
     @Override
     public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
-        JCRSessionWrapper sessionLive = JCRSessionFactory.getInstance().getCurrentSystemSession("live",
-                null, null);
+        JCRSessionWrapper sessionLive = JCRSessionFactory.getInstance().getCurrentSystemSession(
+                "live", null, null);
         String query = "SELECT * FROM [jnt:journalist]";
         JCRNodeIteratorWrapper jcrNodeIteratorWrapper = getNodes(sessionLive, query);
         while (jcrNodeIteratorWrapper.hasNext()) {
@@ -38,13 +34,13 @@ public class RemoveDisabledUserJob extends BackgroundJob {
             Boolean isEnabled = jcrNodeWrapper.getProperty("isEnabled").getBoolean();
             if (!isEnabled) {
                 removeUser(jcrNodeWrapper);
-                String name = jcrNodeWrapper.getName();
                 removeJournalistInDefault(jcrNodeWrapper.getName());
                 jcrNodeWrapper.remove();
                 sessionLive.save();
             }
         }
     }
+
     private JCRNodeIteratorWrapper getNodes (JCRSessionWrapper session, String query) throws RepositoryException {
         QueryManager queryManager = session.getWorkspace().getQueryManager();
         Query q  = queryManager.createQuery(query, Query.JCR_SQL2);

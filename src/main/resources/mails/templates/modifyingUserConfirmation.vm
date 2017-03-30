@@ -1,0 +1,13 @@
+#* @vtlvariable name="newUser" type="org.jahia.services.content.JCRNodeWrapper" *#
+#* @vtlvariable name="bundle" type="java.util.ResourceBundle" *#
+<html>
+<body>
+<p>
+Hi!
+</p>
+<p>
+User was modified
+</p>
+
+</body>
+</html>
