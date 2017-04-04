@@ -23,10 +23,9 @@ public class UserRule {
     @Autowired
     private MailService mailService;
 
-    String[] massiveOfProperties = {"title", "academicTitle", "firstName", "firstName", "lastName", "adress",
-            "NPA", "place", "phoneNumber", "cellphoneNumber", "email", "newspapers", "workLanguage",
+    String[] massiveOfProperties = {"gender", "academicTitle", "firstName", "firstName", "lastName", "adress",
+            "zipCode", "city", "phone", "mobile", "email", "newspapers", "languageOfWork",
             "typeOfAccreditation", "accreditedFor"};
-
 
     public void createUser(AddedNodeFact addedNodeFact) throws RepositoryException, ScriptException {
         final JCRNodeWrapper jcrNodeWrapper = addedNodeFact.getNode();
