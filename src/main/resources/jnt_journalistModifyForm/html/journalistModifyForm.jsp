@@ -24,16 +24,37 @@
 </style>
 
 <%final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();%>
+<c:set var="currentPasswordProperty" scope="session" value="<%=user.getProperty("password")%>"/>
+<c:set var="newspapersProperty" scope="session" value="<%=user.getProperty("newspapers")%>"/>
+<c:set var="genderProperty" scope="session" value="<%=user.getProperty("gender")%>"/>
+<c:set var="academicProperty" scope="session" value="<%=user.getProperty("academicTitle")%>"/>
+<c:set var="firstNameProperty" scope="session" value="<%=user.getProperty("firstName")%>"/>
+<c:set var="lastNameProperty" scope="session" value="<%=user.getProperty("lastName")%>"/>
+<c:set var="addressProperty" scope="session" value="<%=user.getProperty("address")%>"/>
+<c:set var="zipCodeProperty" scope="session" value="<%=user.getProperty("zipCode")%>"/>
+<c:set var="cityProperty" scope="session" value="<%=user.getProperty("city")%>"/>
+<c:set var="phoneProperty" scope="session" value="<%=user.getProperty("phone")%>"/>
+<c:set var="mobileProperty" scope="session" value="<%=user.getProperty("mobile")%>"/>
+<c:set var="emailProperty" scope="session" value="<%=user.getProperty("email")%>"/>
+
 <div class="mod modForm">
 <form action="<c:url value='${url.base}${currentNode.path}'/>.changeJournalist.do" method="post">
+    <div>${param.errorMessage}</div>
     <ol>
+        <li class="row"><div class="label"><label for="currentPassword"></label></div><div class="fields"><input type="hidden" name="currentPassword" id="currentPassword" value="${currentPasswordProperty}"/></div></li>
+        <li class="row"><div class="label"><label for="currentPasswordView">Current password</label></div><div class="fields"><input type="password" name="currentPasswordView" id="currentPasswordView" value="<c:if test="${currentPasswordProperty != null}">${currentPasswordProperty}</c:if>"/></div></li>
+        <li class="row"><div class="label"><label for="newPassword">New password</label></div><div class="fields"><input type="password" name="newPassword" id="newPassword" value=""/></div></li>
+        <li class="row"><div class="label"><label for="confirmNewPassword"></label></div><div class="fields"><input type="password" name="confirmNewPassword" id="confirmNewPassword" value=""/></div></li>
         <li class="row"><div class="label"><label for="userName">User</label></div><div class="fields"><input type="hidden" name="userName" id="userName" value="<%=user.getUsername()%>"/></div> <div><%=user.getUsername()%></div></li>
-        <li class="row"><div class="label"><label for="newspapers">Newspapers concerned</label></div><div class="fields"><input type="text" name="newspapers" id="newspapers" value="<%=user.getProperty("newspapers")%>"/></div></li>
+        <li class="row"><div class="label"><label for="newspapers">Newspapers concerned</label></div><div class="fields"><input type="text" name="newspapers" id="newspapers" value="<c:if test="${newspapersProperty != null}">${newspapersProperty}</c:if>"/></div></li>
         <li class="row"><div class="label">Language of work</div><div class="fields">
             <c:set var="languagesStr" scope="session" value="<%=user.getProperty("languageOfWork")%>"/>
             <c:set var="French" scope="session" value="French"/>
             <c:set var="German" scope="session" value="German"/>
             <c:set var="Itallian" scope="session" value="Itallian"/>
+            <c:set var="isFrench" scope="session" value="false"/>
+            <c:set var="isGerman" scope="session" value="false"/>
+            <c:set var="isItallian" scope="session" value="false"/>
             <c:if test="${languagesStr != null}">
                 <c:forEach var="language" items="<%=user.getProperty("languageOfWork").split(" ")%>">
                     <c:if test="${language==French}">
@@ -50,16 +71,16 @@
             <label class="fieldrow"><input type="checkbox" class="checkbox" name="languageOfWork" value="French" <c:if test="${isFrench}">checked="true"</c:if>/>French</label>
             <label class="fieldrow"><input type="checkbox" class="checkbox" name="languageOfWork" value="German" <c:if test="${isGerman}">checked="true"</c:if>/>German</label>
             <label class="fieldrow"><input type="checkbox" class="checkbox" name="languageOfWork" value="Itallian" <c:if test="${isItallian}">checked="true"</c:if>/>Itallian</label></div></li>
-        <li class="row"><div class="label"><label for="gender">Gender</label></div><div class="fields"><input type="hidden" name="gender" id="gender" value="<%=user.getProperty("gender")%>"/></div> <div><%=user.getProperty("gender")%></div></li>
-        <li class="row"><div class="label"><label for="academicTitle">Academic Title</label></div><div class="fields"><input type="hidden" name="academicTitle" id="academicTitle" value="<%=user.getProperty("academicTitle")%>"/></div> <div><%=user.getProperty("academicTitle")%></div></li>
-        <li class="row"><div class="label"><label for="firstName">Name</label></div><div class="fields"><input type="hidden" name="firstName" id="firstName" value="<%=user.getProperty("firstName")%>"/></div> <div><%=user.getProperty("firstName")%></div></li>
-        <li class="row"><div class="label"><label for="lastName">Surname</label></div><div class="fields"><input type="hidden" name="lastName" id="lastName" value="<%=user.getProperty("lastName")%>"/></div><div><%=user.getProperty("lastName")%></div></li>
-        <li class="row"><div class="label"><label for="address">Address</label></div><div class="fields"><input type="text" name="address" id="address" value="<%=user.getProperty("address")%>"/></div></li>
-        <li class="row"><div class="label"><label for="zipCode">Zip Code</label></div><div class="fields"><input type="text" name="zipCode" id="zipCode" value="<%=user.getProperty("zipCode")%>"/></div></li>
-        <li class="row"><div class="label"><label for="city">City</label></div><div class="fields"><input type="text" name="city" id="city" value="<%=user.getProperty("city")%>"/></div></li>
-        <li class="row"><div class="label"><label for="phone">Phone</label></div><div class="fields"><input type="text" name="phone" id="phone" value="<%=user.getProperty("phone")%>"/></div></li>
-        <li class="row"><div class="label"><label for="mobile">Mobile</label></div><div class="fields"><input type="text" name="mobile" id="mobile" value="<%=user.getProperty("mobile")%>"/></div></li>
-        <li class="row"><div class="label"><label for="email">Email</label></div><div class="fields"><input type="text" name="email" id="email" value="<%=user.getProperty("email")%>"/></div></li>
+        <li class="row"><div class="label"><label for="gender">Gender</label></div><div class="fields"><input type="hidden" name="gender" id="gender" value="<%=user.getProperty("gender")%>"/></div> <div><c:if test="${genderProperty != null}">${genderProperty}</c:if></div></li>
+        <li class="row"><div class="label"><label for="academicTitle">Academic Title</label></div><div class="fields"><input type="hidden" name="academicTitle" id="academicTitle" value="<%=user.getProperty("academicTitle")%>"/></div> <div><c:if test="${academicProperty != null}">${academicProperty}</c:if></div></li>
+        <li class="row"><div class="label"><label for="firstName">Name</label></div><div class="fields"><input type="hidden" name="firstName" id="firstName" value="<%=user.getProperty("firstName")%>"/></div> <div><c:if test="${firstNameProperty != null}">${firstNameProperty}</c:if></div></li>
+        <li class="row"><div class="label"><label for="lastName">Surname</label></div><div class="fields"><input type="hidden" name="lastName" id="lastName" value="<%=user.getProperty("lastName")%>"/></div><div><c:if test="${lastNameProperty != null}">${lastNameProperty}</c:if></div></li>
+        <li class="row"><div class="label"><label for="address">Address</label></div><div class="fields"><input type="text" name="address" id="address" value="<c:if test="${addressProperty != null}">${addressProperty}</c:if>"/></div></li>
+        <li class="row"><div class="label"><label for="zipCode">Zip Code</label></div><div class="fields"><input type="text" name="zipCode" id="zipCode" value="<c:if test="${zipCodeProperty != null}">${zipCodeProperty}</c:if>"/></div></li>
+        <li class="row"><div class="label"><label for="city">City</label></div><div class="fields"><input type="text" name="city" id="city" value="<c:if test="${cityProperty != null}">${cityProperty}</c:if>"/></div></li>
+        <li class="row"><div class="label"><label for="phone">Phone</label></div><div class="fields"><input type="text" name="phone" id="phone" value="<c:if test="${phoneProperty != null}">${phoneProperty}</c:if>"/></div></li>
+        <li class="row"><div class="label"><label for="mobile">Mobile</label></div><div class="fields"><input type="text" name="mobile" id="mobile" value="<c:if test="${mobileProperty != null}">${mobileProperty}</c:if>"/></div></li>
+        <li class="row"><div class="label"><label for="email">Email</label></div><div class="fields"><input type="text" name="email" id="email" value="<c:if test="${emailProperty != null}">${emailProperty}</c:if>"/></div></li>
         <input type="hidden" name="url" id="url" value="${renderContext.mainResource.node.url}"/>
     </ol>
     <button type="submit">Submit </button>

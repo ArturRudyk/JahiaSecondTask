@@ -1,13 +1,25 @@
-#* @vtlvariable name="newUser" type="org.jahia.services.content.JCRNodeWrapper" *#
+#* @vtlvariable name="ModifiedUser" type="org.jahia.services.content.JCRNodeWrapper" *#
 #* @vtlvariable name="bundle" type="java.util.ResourceBundle" *#
 <html>
 <body>
 <p>
 Hi!
 </p>
-<p>
-User was modified
-</p>
+--------------------------------------------------------
+This is an automatic generated message
+--------------------------------------------------------
+
+<p>Contact information</p>
+<p>Title:  #if($ModifiedUser.hasProperty("gender")) ${ModifiedUser.getProperty("gender").string}#end</p>
+<p>Academic title:  #if($ModifiedUser.hasProperty("academicTitle")) ${ModifiedUser.getProperty("academicTitle").string}#end</p>
+<p>Name:  #if($ModifiedUser.hasProperty("firstName")) ${ModifiedUser.getProperty("firstName").string}#end</p>
+<p>Surname:  #if($ModifiedUser.hasProperty("lastName")) ${ModifiedUser.getProperty("lastName").string}#end</p>
+<p>Address:  #if($ModifiedUser.hasProperty("address")) ${ModifiedUser.getProperty("address").string}#end</p>
+<p>Zip code:  #if($ModifiedUser.hasProperty("zipCode")) ${ModifiedUser.getProperty("zipCode").string}#end</p>
+<p>City:  #if($ModifiedUser.hasProperty("city")) ${ModifiedUser.getProperty("city").string}#end</p>
+<p>Phone number:  #if($ModifiedUser.hasProperty("phone")) ${ModifiedUser.getProperty("phone").string}#end</p>
+<p>Mobile number:  #if($ModifiedUser.hasProperty("mobile")) ${ModifiedUser.getProperty("mobile").string}#end</p>
+<p>Email:  #if($ModifiedUser.hasProperty("email")) ${ModifiedUser.getProperty("email").string}#end</p>
 
 </body>
 </html>

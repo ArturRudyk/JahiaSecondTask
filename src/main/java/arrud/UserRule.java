@@ -23,9 +23,9 @@ public class UserRule {
     @Autowired
     private MailService mailService;
 
-    String[] massiveOfProperties = {"gender", "academicTitle", "firstName", "firstName", "lastName", "adress",
+    String[] massiveOfProperties = {"gender", "academicTitle", "firstName", "lastName", "address",
             "zipCode", "city", "phone", "mobile", "email", "newspapers", "languageOfWork",
-            "typeOfAccreditation", "accreditedFor"};
+            "typeOfAccreditation", "accreditedFor", "password"};
 
     public void createUser(AddedNodeFact addedNodeFact) throws RepositoryException, ScriptException {
         final JCRNodeWrapper jcrNodeWrapper = addedNodeFact.getNode();
@@ -46,8 +46,6 @@ public class UserRule {
                 return true;
             }
         });
-        String mailConfirmationTemplate = "/mails/templates/newUserConfirmation.vm";
-        sendMessage(jcrNodeWrapper, mailConfirmationTemplate);
     }
 
     public void modifyUser(PublishedNodeFact publishedNodeFact) throws RepositoryException, ScriptException {
@@ -62,8 +60,6 @@ public class UserRule {
                     return true;
                 }
             });
-            String mailConfirmationTemplate = "/mails/templates/removingUserConfirmation.vm";
-            sendMessage(jcrNodeWrapper, mailConfirmationTemplate);
         } else {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 @Override
@@ -74,6 +70,7 @@ public class UserRule {
                             userNode.setProperty(massiveOfProperties[i], jcrNodeWrapper.getPropertyAsString(massiveOfProperties[i]));
                         }
                     }
+                    userNode.setPassword(jcrNodeWrapper.getPropertyAsString("password"));
                     userNode.getSession().save();
                     JCRPublicationService.getInstance().publishByMainId(userNode.getIdentifier(),
                             "default", "live", null, true, null);
@@ -88,7 +85,7 @@ public class UserRule {
     private void sendMessage(JCRNodeWrapper jcrNodeWrapper, String mailConfirmationTemplate)
             throws ScriptException, RepositoryException {
         Map<String, Object> bindings = new HashMap<String, Object>();
-        bindings.put("newUser", jcrNodeWrapper);
+        bindings.put("ModifiedUser", jcrNodeWrapper);
         String email = jcrNodeWrapper.getPropertyAsString("email");
         mailService.sendMessageWithTemplate(mailConfirmationTemplate, bindings, email,
                 mailService.defaultSender(), "", "", Locale.ENGLISH, "ListOfJudges");
