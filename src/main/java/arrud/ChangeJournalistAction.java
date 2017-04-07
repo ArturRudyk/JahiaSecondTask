@@ -7,12 +7,12 @@ import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -31,36 +31,15 @@ public class ChangeJournalistAction extends Action {
 
     String[] massiveOfLanguages = {"French", "German", "Itallian"};
 
+    String errorMessage = "";
+
     @Override
     public ActionResult doExecute(HttpServletRequest httpServletRequest, RenderContext renderContext, Resource resource,
                                   JCRSessionWrapper jcrSessionWrapper, Map<String, List<String>> map, URLResolver urlResolver) throws Exception {
         String userName = getParameter(map, "userName");
-        String errorMessage = "";
-        if (!userName.isEmpty()) {
-            if (isNewPasswordExists(map)) {
-                if (isPasswordConfirm(map)) {
-                    if (isPasswordDoNotMatch(map)) {
-                        if (isValidProperties(map)) {
-                            setPassword(userName, getParameter(map, "newPassword"));
-                            modifyJournalist(userName, map);
-                        } else {
-                            errorMessage += "?errorMessage=invalidProperties";
-                        }
-                    } else {
-                        errorMessage += "?errorMessage=CurrentAndNewPasswordMatches";
-                    }
-                } else {
-                    errorMessage += "?errorMessage=PasswordNotConfirm";
-                }
-            } else {
-                if (isValidProperties(map)) {
-                    modifyJournalist(userName, map);
-                } else {
-                    errorMessage += "?errorMessage=invalidProperties";
-                }
-            }
-        }
+            modifyJournalist(userName, map);
         renderContext.getResponse().sendRedirect(getParameter(map, "url")+ errorMessage);
+        errorMessage = "";
         return new ActionResult(HttpServletResponse.SC_OK);
     }
 
@@ -68,6 +47,7 @@ public class ChangeJournalistAction extends Action {
         boolean result = (getParameter(map, "newPassword") == null) ? false : true;
         return result;
     }
+
 
     private boolean isPasswordConfirm(Map<String, List<String>> map) throws RepositoryException {
         String newPassword = getParameter(map, "newPassword");
@@ -84,31 +64,74 @@ public class ChangeJournalistAction extends Action {
     }
 
     private boolean isValidProperties(Map<String, List<String>> map) {
-        boolean result = false;
         if (checkForMandatory(map)) {
-            boolean email = checkProperty(getParameter(map, "email"), "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+            boolean email = checkProperty("email", getParameter(map, "email"), "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                     + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-            boolean zipCode = checkProperty(getParameter(map, "zipCode"), "^[0-9]+$");
-            result = (email & zipCode);
+            boolean zipCode = checkProperty("ZipCode", getParameter(map, "zipCode"), "^[0-9]+$");
+            return (email & zipCode);
+        } else {
+            return false;
         }
-        return result;
     }
 
-    private boolean checkProperty(String property, String expression) {
+    private boolean checkProperty(String propertyName, String propertyValue, String expression) {
         Pattern pattern = Pattern.compile(expression);
-        Matcher matcher = pattern.matcher(property);
-        return matcher.matches();
+        Matcher matcher = pattern.matcher(propertyValue);
+        if (matcher.matches()) {
+            return true;
+        } else {
+            setErrorMessage("errorMessage", "invalidProperties");
+            setErrorMessage("invalidProperty", propertyName);
+            return false;
+        }
     }
 
     private boolean checkForMandatory(Map<String, List<String>> map) {
         boolean result = true;
-        for (int i = 0; i < massiveOfMandatoryProperties.length; i++) {
-            if (getParameter(map, massiveOfProperties[i]) == null) {
-                result = false;
+        if (map.containsKey("languageOfWork")) {
+            for (int i = 0; i < massiveOfMandatoryProperties.length; i++) {
+                if (getParameter(map, massiveOfMandatoryProperties[i]) == null) {
+                    result = false;
+                    setErrorMessage("errorMessage", "invalidProperties");
+                    setErrorMessage("invalidProperty", massiveOfMandatoryProperties[i]);
+                    break;
+                }
+            }
+        } else {
+            result = false;
+            setErrorMessage("errorMessage", "invalidProperties");
+            setErrorMessage("invalidProperty", "language");
+        }
+        return result;
+    }
+
+    private void modifyJournalist(String userName, Map<String, List<String>> map) throws RepositoryException {
+        final JCRNodeWrapper jcrNodeWrapper = getJournalist(userName);
+        if (isValidProperties(map)) {
+            boolean isModificationSuccessful = true;
+            if (isNewPasswordExists(map)) {
+                 isModificationSuccessful = modifyPassword(map);
+            }
+            if (isModificationSuccessful) {
+                modifyProperies(jcrNodeWrapper, map);
+                setLanguage(jcrNodeWrapper, map);
+                jcrNodeWrapper.getSession().save();
+                publish(jcrNodeWrapper);
             }
         }
-        if (!map.containsKey("languageOfWork")) {
-            result = false;
+    }
+
+    private boolean modifyPassword( Map<String, List<String>> map) throws RepositoryException {
+        boolean result = false;
+        if (isPasswordConfirm(map)) {
+            if (isPasswordDoNotMatch(map)) {
+                setPassword(getParameter(map, "userName"), getParameter(map, "newPassword"));
+                result = true;
+            } else {
+                setErrorMessage("errorMessage", "currentAndNewPasswordMatches");
+            }
+        } else {
+            setErrorMessage("errorMessage", "passwordNotConfirm");
         }
         return result;
     }
@@ -120,8 +143,7 @@ public class ChangeJournalistAction extends Action {
         publish(jcrNodeWrapper);
     }
 
-    private void modifyJournalist(String userName, Map<String, List<String>> map) throws RepositoryException {
-        final JCRNodeWrapper jcrNodeWrapper = getJournalist(userName);
+    private void modifyProperies(JCRNodeWrapper jcrNodeWrapper, Map<String, List<String>> map) throws RepositoryException {
         for (int i = 0; i < massiveOfProperties.length; i++) {
             if (jcrNodeWrapper.hasProperty(massiveOfProperties[i]) &&
                     (getParameter(map, massiveOfProperties[i]) != null) &&
@@ -129,10 +151,6 @@ public class ChangeJournalistAction extends Action {
                 jcrNodeWrapper.setProperty(massiveOfProperties[i], getParameter(map, massiveOfProperties[i]));
             }
         }
-        setLanguage(jcrNodeWrapper, map);
-        jcrNodeWrapper.grantRoles("u:" + jcrNodeWrapper.getName(), Collections.singleton("owner"));
-        jcrNodeWrapper.getSession().save();
-        publish(jcrNodeWrapper);
     }
 
     private void setLanguage(JCRNodeWrapper jcrNodeWrapper, Map<String, List<String>> map) throws RepositoryException {
@@ -164,5 +182,13 @@ public class ChangeJournalistAction extends Action {
     private void publish(JCRNodeWrapper jcrNodeWrapper) throws RepositoryException {
         JCRPublicationService.getInstance().publishByMainId(jcrNodeWrapper.getIdentifier(),
                 "default", "live", null, true, null);
+    }
+
+    private void setErrorMessage(String key, String value) {
+        if (errorMessage.equals("")) {
+            errorMessage = "?" + key + "=" + value;
+        } else {
+            errorMessage += "&" + key + "=" + value;
+        }
     }
 }

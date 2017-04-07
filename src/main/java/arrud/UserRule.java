@@ -10,10 +10,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import javax.jcr.RepositoryException;
 import javax.script.ScriptException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 public class UserRule {
 
@@ -41,6 +38,7 @@ public class UserRule {
                 JahiaUser journalistUser = jahiaUserManagerService.createUser(jcrNodeWrapper.getName(),
                         jcrNodeWrapper.getProperty("password").getString(), properties, session).getJahiaUser();
                 session.save();
+                jcrNodeWrapper.grantRoles("u:" + jcrNodeWrapper.getName(), Collections.singleton("owner"));
                 JCRPublicationService.getInstance().publishByMainId(jcrNodeWrapper.getIdentifier(),
                         "default", "live", null, true, null);
                 return true;

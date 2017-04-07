@@ -37,15 +37,30 @@
 <c:set var="mobileProperty" scope="session" value="<%=user.getProperty("mobile")%>"/>
 <c:set var="emailProperty" scope="session" value="<%=user.getProperty("email")%>"/>
 
-<div class="mod modForm">
-<form action="<c:url value='${url.base}${currentNode.path}'/>.changeJournalist.do" method="post">
-    <div>${param.errorMessage}</div>
+<c:set var="passwordNotConfirm" scope="session" value="passwordNotConfirm"/>
+<c:set var="currentAndNewPasswordMatches" scope="session" value="currentAndNewPasswordMatches"/>
+<c:set var="invalidProperties" scope="session" value="invalidProperties"/>
+
+<c:choose>
+    <c:when test="${param.errorMessage == currentAndNewPasswordMatches}">
+        <p>Current and new password matches</p>
+    </c:when>
+    <c:when test="${param.errorMessage == passwordNotConfirm}">
+        <p>New password not confirm</p>
+    </c:when>
+    <c:when test="${param.errorMessage == invalidProperties}">
+        <c:set var="invalidProperty" scope="session" value="${param.invalidProperty}"/>
+        <p>Invalid property <c:out value="${invalidProperty}"/></p>
+    </c:when>
+    <c:otherwise>
+        <div class="mod modForm">
+    <form action="<c:url value='${url.base}${currentNode.path}'/>.changeJournalist.do" method="post">
     <ol>
+        <li class="row"><div class="label"><label for="userName"></label></div><div class="fields"><input type="hidden" name="userName" id="userName" value="<%=user.getUsername()%>"/></div></li>
         <li class="row"><div class="label"><label for="currentPassword"></label></div><div class="fields"><input type="hidden" name="currentPassword" id="currentPassword" value="${currentPasswordProperty}"/></div></li>
         <li class="row"><div class="label"><label for="currentPasswordView">Current password</label></div><div class="fields"><input type="password" name="currentPasswordView" id="currentPasswordView" value="<c:if test="${currentPasswordProperty != null}">${currentPasswordProperty}</c:if>"/></div></li>
         <li class="row"><div class="label"><label for="newPassword">New password</label></div><div class="fields"><input type="password" name="newPassword" id="newPassword" value=""/></div></li>
         <li class="row"><div class="label"><label for="confirmNewPassword"></label></div><div class="fields"><input type="password" name="confirmNewPassword" id="confirmNewPassword" value=""/></div></li>
-        <li class="row"><div class="label"><label for="userName">User</label></div><div class="fields"><input type="hidden" name="userName" id="userName" value="<%=user.getUsername()%>"/></div> <div><%=user.getUsername()%></div></li>
         <li class="row"><div class="label"><label for="newspapers">Newspapers concerned</label></div><div class="fields"><input type="text" name="newspapers" id="newspapers" value="<c:if test="${newspapersProperty != null}">${newspapersProperty}</c:if>"/></div></li>
         <li class="row"><div class="label">Language of work</div><div class="fields">
             <c:set var="languagesStr" scope="session" value="<%=user.getProperty("languageOfWork")%>"/>
@@ -84,5 +99,18 @@
         <input type="hidden" name="url" id="url" value="${renderContext.mainResource.node.url}"/>
     </ol>
     <button type="submit">Submit </button>
-</form>
-</div>
+    </form>
+        </div>
+    </c:otherwise>
+</c:choose>
+
+<script type="text/javascript">
+    window.onload = function () {
+        if(window.location.hash) {
+            window.location = window.location.pathname;
+        }
+        if(window.location.search) {
+           window.location.hash = "#loader";
+        }
+    }
+</script>
