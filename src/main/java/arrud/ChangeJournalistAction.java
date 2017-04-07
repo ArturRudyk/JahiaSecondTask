@@ -155,10 +155,11 @@ public class ChangeJournalistAction extends Action {
 
     private void modifyProperies(JCRNodeWrapper jcrNodeWrapper, Map<String, List<String>> map) throws RepositoryException {
         for (int i = 0; i < massiveOfProperties.length; i++) {
-            if (jcrNodeWrapper.hasProperty(massiveOfProperties[i]) &&
-                    (getParameter(map, massiveOfProperties[i]) != null) &&
+            if ((getParameter(map, massiveOfProperties[i]) != null) &&
                     !getParameter(map, massiveOfProperties[i]).isEmpty()) {
                 jcrNodeWrapper.setProperty(massiveOfProperties[i], getParameter(map, massiveOfProperties[i]));
+            } else {
+                jcrNodeWrapper.setProperty(massiveOfProperties[i], "");
             }
         }
     }
