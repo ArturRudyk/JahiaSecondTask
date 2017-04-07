@@ -39,6 +39,7 @@ public class UserRule {
                         jcrNodeWrapper.getProperty("password").getString(), properties, session).getJahiaUser();
                 session.save();
                 jcrNodeWrapper.grantRoles("u:" + jcrNodeWrapper.getName(), Collections.singleton("owner"));
+                jcrNodeWrapper.getSession().save();
                 JCRPublicationService.getInstance().publishByMainId(jcrNodeWrapper.getIdentifier(),
                         "default", "live", null, true, null);
                 return true;
@@ -75,18 +76,7 @@ public class UserRule {
                     return true;
                 }
             });
-            String mailConfirmationTemplate = "/mails/templates/modifyingUserConfirmation.vm";
-            sendMessage(jcrNodeWrapper, mailConfirmationTemplate);
         }
-    }
-
-    private void sendMessage(JCRNodeWrapper jcrNodeWrapper, String mailConfirmationTemplate)
-            throws ScriptException, RepositoryException {
-        Map<String, Object> bindings = new HashMap<String, Object>();
-        bindings.put("ModifiedUser", jcrNodeWrapper);
-        String email = jcrNodeWrapper.getPropertyAsString("email");
-        mailService.sendMessageWithTemplate(mailConfirmationTemplate, bindings, email,
-                mailService.defaultSender(), "", "", Locale.ENGLISH, "ListOfJudges");
     }
 
     public void setJahiaUserManagerService(JahiaUserManagerService jahiaUserManagerService) {

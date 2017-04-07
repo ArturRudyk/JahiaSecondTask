@@ -3,17 +3,22 @@ package arrud;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.content.*;
+import org.jahia.services.mail.MailService;
 import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
+import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,6 +27,9 @@ import java.util.regex.Pattern;
  * Created by root on 30.03.17.
  */
 public class ChangeJournalistAction extends Action {
+
+    @Autowired
+    private MailService mailService;
 
     String[] massiveOfProperties = {"gender", "academicTitle", "firstName", "lastName", "address",
             "zipCode", "city", "phone", "mobile", "email", "newspapers"};
@@ -105,7 +113,7 @@ public class ChangeJournalistAction extends Action {
         return result;
     }
 
-    private void modifyJournalist(String userName, Map<String, List<String>> map) throws RepositoryException {
+    private void modifyJournalist(String userName, Map<String, List<String>> map) throws RepositoryException, ScriptException {
         final JCRNodeWrapper jcrNodeWrapper = getJournalist(userName);
         if (isValidProperties(map)) {
             boolean isModificationSuccessful = true;
@@ -117,6 +125,8 @@ public class ChangeJournalistAction extends Action {
                 setLanguage(jcrNodeWrapper, map);
                 jcrNodeWrapper.getSession().save();
                 publish(jcrNodeWrapper);
+                sendMessage(jcrNodeWrapper,"/mails/templates/modifyingUserConfirmation.vm");
+
             }
         }
     }
@@ -184,6 +194,15 @@ public class ChangeJournalistAction extends Action {
                 "default", "live", null, true, null);
     }
 
+    private void sendMessage(JCRNodeWrapper jcrNodeWrapper, String mailConfirmationTemplate)
+            throws ScriptException, RepositoryException {
+        Map<String, Object> bindings = new HashMap<String, Object>();
+        bindings.put("ModifiedUser", jcrNodeWrapper);
+        String email = jcrNodeWrapper.getPropertyAsString("email");
+        mailService.sendMessageWithTemplate(mailConfirmationTemplate, bindings, email,
+                mailService.defaultSender(), "", "", Locale.ENGLISH, "ListOfJudges");
+    }
+
     private void setErrorMessage(String key, String value) {
         if (errorMessage.equals("")) {
             errorMessage = "?" + key + "=" + value;
@@ -191,4 +210,9 @@ public class ChangeJournalistAction extends Action {
             errorMessage += "&" + key + "=" + value;
         }
     }
+
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
+    }
+
 }
