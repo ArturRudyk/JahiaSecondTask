@@ -13,7 +13,7 @@
     <tag>
         <description>Set some property to the journalist</description>
         <name>setProperty</name>
-        <tag-class>arrud.ModifyJournalistTag</tag-class>
+        <tag-class>arrud.SetPropertyToJournalistTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>propertyName</name>

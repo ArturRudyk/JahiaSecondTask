@@ -11,37 +11,13 @@ import javax.jcr.query.QueryManager;
 /**
  * Created by root on 10.04.17.
  */
-public class ModifyJournalistTag extends AbstractJCRTag {
+public class SetPropertyToJournalistTag extends AbstractJCRTag {
 
     private String propertyName;
 
     private String propertyValue;
 
     private String journalist;
-
-    public String getPropertyName() {
-        return propertyName;
-    }
-
-    public void setPropertyName(String propertyName) {
-        this.propertyName = propertyName;
-    }
-
-    public String getPropertyValue() {
-        return propertyValue;
-    }
-
-    public void setPropertyValue(String propertyValue) {
-        this.propertyValue = propertyValue;
-    }
-
-    public String getJournalist() {
-        return journalist;
-    }
-
-    public void setJournalist(String journalist) {
-        this.journalist = journalist;
-    }
 
     public int doStartTag() {
         try {
@@ -74,10 +50,38 @@ public class ModifyJournalistTag extends AbstractJCRTag {
 
     private void setProperty(JCRNodeWrapper jcrNodeWrapper, String propertyName, String propertyValue) throws RepositoryException {
         if (propertyValue != null) {
-            jcrNodeWrapper.setProperty(propertyName, propertyValue);
+            if (jcrNodeWrapper.getProperty(propertyName).isMultiple()) {
+                String[] multipleProperty = propertyValue.split(" ");
+                jcrNodeWrapper.setProperty(propertyName, multipleProperty);
+            } else {
+                jcrNodeWrapper.setProperty(propertyName, propertyValue);
+            }
         } else {
             jcrNodeWrapper.setProperty(propertyName, "");
         }
     }
 
+    public String getPropertyName() {
+        return propertyName;
+    }
+
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
+    }
+
+    public String getPropertyValue() {
+        return propertyValue;
+    }
+
+    public void setPropertyValue(String propertyValue) {
+        this.propertyValue = propertyValue;
+    }
+
+    public String getJournalist() {
+        return journalist;
+    }
+
+    public void setJournalist(String journalist) {
+        this.journalist = journalist;
+    }
 }
