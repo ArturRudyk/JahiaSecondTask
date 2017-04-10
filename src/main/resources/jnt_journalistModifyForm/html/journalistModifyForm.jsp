@@ -11,6 +11,7 @@
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
 <%@ taglib prefix="utility" uri="http://www.jahia.org/tags/utilityLib" %>
 <%@ taglib prefix="s" uri="http://www.jahia.org/tags/search" %>
+<%@ taglib prefix="my" uri="http://www.jahia.org/tags/setValues" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -19,11 +20,13 @@
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
+
 <style>
     @import "css/bgerv10.css";
 </style>
 
 <%final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();%>
+
 <c:set var="currentPasswordProperty" scope="session" value="<%=user.getProperty("password")%>"/>
 <c:set var="newspapersProperty" scope="session" value="<%=user.getProperty("newspapers")%>"/>
 <c:set var="genderProperty" scope="session" value="<%=user.getProperty("gender")%>"/>
