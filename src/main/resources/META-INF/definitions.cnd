@@ -39,3 +39,5 @@
 
 [jnt:journalistModifyForm] > jnt:content, jmix:basicContent
 
+[jnt:languageMenu] > jnt:content, jmix:basicContent
+
