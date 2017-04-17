@@ -41,3 +41,5 @@
 
 [jnt:languageMenu] > jnt:content, jmix:basicContent
 
+[jnt:mySearch] > jnt:simpleSearchForm, jmix:basicContent
+

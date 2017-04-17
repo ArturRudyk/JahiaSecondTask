@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
     <modules jcr:primaryType="jnt:modules">
-        <listofjudges j:dependencies="default"
+        <listofjudges j:dependencies="default search"
                     j:modulePriority="0"
                     j:moduleType="module"
                     j:title="ListOfJudges"
@@ -27,11 +27,9 @@
                                         <ListOfJudges.jsp jcr:primaryType="jnt:viewFile"/>
                                     </html>
                                 </jnt_ListOfJudges>
-                                <jnt_journalistModifyForm jcr:mixinTypes="jmix:sourceControl"
-                                               jcr:primaryType="jnt:nodeTypeFolder">
-                                    <html jcr:mixinTypes="jmix:sourceControl"
-                              jcr:primaryType="jnt:templateTypeFolder">
-                                        <journalistModifyForm.jsp jcr:mixinTypes="jmix:sourceControl" jcr:primaryType="jnt:viewFile"/>
+                                <jnt_journalistModifyForm jcr:primaryType="jnt:nodeTypeFolder">
+                                    <html jcr:primaryType="jnt:templateTypeFolder">
+                                        <journalistModifyForm.jsp jcr:primaryType="jnt:viewFile"/>
                                     </html>
                                 </jnt_journalistModifyForm>
                             </resources>
