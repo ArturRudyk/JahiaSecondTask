@@ -18,20 +18,19 @@
 <%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 
-
 <%--<div class="mod modNavMain">--%>
-    <%--<div class="inner">--%>
+<%--<div class="inner">--%>
 <%--<c:forEach items="${currentNode.nodes}" var="subchild">--%>
 <%--<template:module node="${subchild}" editable="false"/><%= System.getProperty("line.separator") %> --%>
 <%--</c:forEach>--%>
-  <%--</div>--%>
+<%--</div>--%>
 <%--</div>--%>
 
 <c:if test="${renderContext.editMode and empty currentNode.properties.items}">
     Main menu to contribute
 </c:if>
 
-<div class="mod modNavMain">
+<div class="mod modNavService">
     <div class="inner">
         <ul>
             <c:forEach items="${currentNode.properties.items}" var="item" varStatus="status">
