@@ -43,3 +43,10 @@
 
 [jnt:mySearch] > jnt:simpleSearchForm, jmix:basicContent
 
+[jnt:simMenuPage] > jnt:content, jmix:basicContent
+ - nameOfPage (string) mandatory
+ - referenceToPage (string) mandatory
+
+[jnt:simMenuList] > jnt:contentList, jmix:basicContent orderable
+- items (weakreference) multiple
+
