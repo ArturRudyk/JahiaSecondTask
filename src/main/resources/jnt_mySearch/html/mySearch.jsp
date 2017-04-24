@@ -31,6 +31,7 @@
         <c:if test="${not empty title.string}">
             <label for="searchTerm">${fn:escapeXml(title.string)}:&nbsp;</label>
         </c:if>
+
         <fmt:message key='search.startSearching' var="startSearching"/>
         <s:term match="all_words" id="searchTerm" value="${startSearching}" searchIn="siteContent,tags,files" onfocus="if(this.value=='${startSearching}')this.value='';" onblur="if(this.value=='')this.value='${startSearching}';" class="text-input"/>
         <s:site value="${renderContext.site.name}" includeReferencesFrom="systemsite" display="false"/>

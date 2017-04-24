@@ -46,7 +46,7 @@ public class ChangeJournalistAction extends Action {
                                   JCRSessionWrapper jcrSessionWrapper, Map<String, List<String>> map, URLResolver urlResolver) throws Exception {
         String userName = getParameter(map, "userName");
             modifyJournalist(userName, map);
-        renderContext.getResponse().sendRedirect(getParameter(map, "url")+ errorMessage);
+        renderContext.getResponse().sendRedirect(getParameter(map, "url") + errorMessage);
         errorMessage = "";
         return new ActionResult(HttpServletResponse.SC_OK);
     }
@@ -55,7 +55,6 @@ public class ChangeJournalistAction extends Action {
         boolean result = (getParameter(map, "newPassword") == null) ? false : true;
         return result;
     }
-
 
     private boolean isPasswordConfirm(Map<String, List<String>> map) throws RepositoryException {
         String newPassword = getParameter(map, "newPassword");

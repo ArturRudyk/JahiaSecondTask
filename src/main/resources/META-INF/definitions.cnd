@@ -50,3 +50,8 @@
 [jnt:simMenuList] > jnt:contentList, jmix:basicContent orderable
 - items (weakreference) multiple
 
+[jnt:loginFormComp] > jnt:content, jmix:basicContent
+
+
+
+
