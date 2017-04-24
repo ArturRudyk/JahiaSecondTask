@@ -27,6 +27,7 @@
             </div>
         </div>
         <div class="mod modForm skinFormBlock">
+
             <ui:isLoginError var="loginResult">
                 <span class="error"><fmt:message key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></span>
             </ui:isLoginError>
@@ -45,7 +46,7 @@
             </p>
 
             <div class="divButton">
-                <input type="submit" name="loginButton" class="button" value="<fmt:message key='loginForm.loginbutton.label'/>"/>
+                <input type="submit" name="loginButton" class="button" value="Sign In"/>
             </div>
         </div>
     </ui:loginArea>
